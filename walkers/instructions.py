@@ -80,7 +80,7 @@ class InstructionsFinder(object):
 		else:
 			lindex = int(blk.etiqueta.split(' ')[-1]) + len(blk.instrucciones)
 			positionaletiqueta = " ".join(blk.etiqueta.split(' ')[:-1]) + " " + str(lindex+1)
-			if i.split(' ')[-1][:-2] in self.calls_inventory.keys():
+			if i.split(' ')[-1][:-2] in list(self.calls_inventory.keys()):
 				outCall = True
 				nfil = i.split('->')[0].split(' ')[-1]
 				ndef = i.split('->')[1][:-2]

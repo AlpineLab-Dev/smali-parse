@@ -17,17 +17,17 @@ class ConsoleManager(object):
 		pass
 
 	def print_title(self, tt):
-		print bcolors.HEADER + tt + bcolors.ENDC
+		print(bcolors.HEADER + tt + bcolors.ENDC)
 
 	def print_list(self, lst):
 		for s in lst:
-			print bcolors.OKGREEN + "\t · " + str(s) + bcolors.ENDC
+			print(bcolors.OKGREEN + "\t · " + str(s) + bcolors.ENDC)
 
 	def print_dict(self, dct):
 		for mth in dct:
-			print bcolors.OKGREEN + "\t - " + mth + bcolors.ENDC
+			print(bcolors.OKGREEN + "\t - " + mth + bcolors.ENDC)
 			for str_m in dct[mth]:
-				print bcolors.OKBLUE + "\t\t - " + str_m + bcolors.ENDC
+				print(bcolors.OKBLUE + "\t\t - " + str_m + bcolors.ENDC)
 
 	def print_error(self, msg):
-		print bcolors.FAIL + msg + bcolors.ENDC
+		print(bcolors.FAIL + msg + bcolors.ENDC)

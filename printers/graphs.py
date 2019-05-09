@@ -75,4 +75,4 @@ class GraphManager(object):
 			self.graph.write_png(name + ".png")
 		else:
 			self.graph.write(name + ".dot")
-			print 0
+			print('')

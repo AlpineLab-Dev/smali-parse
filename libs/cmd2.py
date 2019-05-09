@@ -33,7 +33,7 @@ import tempfile
 import doctest
 import unittest
 import datetime
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import glob
 import traceback
 import platform
@@ -69,7 +69,7 @@ class OptionParser(optparse.OptionParser):
             
     def print_help(self, *args, **kwargs):
         try:
-            print (self._func.__doc__)
+            print((self._func.__doc__))
         except AttributeError:
             pass
         optparse.OptionParser.print_help(self, *args, **kwargs)
@@ -178,7 +178,7 @@ pastebufferr = """Redirecting to or from paste buffer requires %s
 to be installed on operating system.
 %s"""
 
-if subprocess.mswindows:
+if subprocess._mswindows:
     try:
         import win32clipboard
         def get_paste_buffer():
@@ -364,7 +364,7 @@ class Cmd(cmd.Cmd):
     continuation_prompt = '> '  
     timing = False              # Prints elapsed time for each command
     # make sure your terminators are not in legalChars!
-    legalChars = u'!#$%.:?@_' + pyparsing.alphanums + pyparsing.alphas8bit
+    legalChars = '!#$%.:?@_' + pyparsing.alphanums + pyparsing.alphas8bit
     shortcuts = {'?': 'help', '!': 'shell', '@': 'load', '@@': '_relative_load'}
     excludeFromHistory = '''run r list l history hi ed edit li eof'''.split()
     default_to_shell = False
@@ -404,7 +404,7 @@ class Cmd(cmd.Cmd):
     def perror(self, errmsg, statement=None):
         if self.debug:
             traceback.print_exc()
-        print (str(errmsg))
+        print((str(errmsg)))
     def pfeedback(self, msg):
         """For printing nonessential feedback.  Can be silenced with `quiet`.
            Inclusion in redirected output is controlled by `feedback_to_output`."""
@@ -471,7 +471,7 @@ class Cmd(cmd.Cmd):
         self.initial_stdout = sys.stdout
         self.history = History()
         self.pystate = {}
-        self.shortcuts = sorted(self.shortcuts.items(), reverse=True)
+        self.shortcuts = sorted(list(self.shortcuts.items()), reverse=True)
         self.keywords = self.reserved_words + [fname[3:] for fname in dir(self) 
                                                if fname.startswith('do_')]            
         self.prompt = "ed@CFGs > "
@@ -743,7 +743,7 @@ class Cmd(cmd.Cmd):
             p = ParsedString(result.args)
             p.parsed = result
             p.parser = self.parsed
-        for (key, val) in kwargs.items():
+        for (key, val) in list(kwargs.items()):
             p.parsed[key] = val
         return p
               
@@ -879,7 +879,7 @@ class Cmd(cmd.Cmd):
         
         if self.use_rawinput:
             try:
-                line = raw_input(prompt)
+                line = input(prompt)
             except EOFError:
                 line = 'EOF'
         else:
@@ -955,11 +955,11 @@ class Cmd(cmd.Cmd):
              | a list of tuples -> interpreted as (value, text), so 
                                    that the return value can differ from
                                    the text advertised to the user '''
-        if isinstance(options, basestring):
-            options = zip(options.split(), options.split())
+        if isinstance(options, str):
+            options = list(zip(options.split(), options.split()))
         fulloptions = []
         for opt in options:
-            if isinstance(opt, basestring):
+            if isinstance(opt, str):
                 fulloptions.append((opt, opt))
             else:
                 try:
@@ -969,7 +969,7 @@ class Cmd(cmd.Cmd):
         for (idx, (value, text)) in enumerate(fulloptions):
             self.poutput('  %2d. %s\n' % (idx+1, text))
         while True:
-            response = raw_input(prompt)
+            response = input(prompt)
             try:
                 response = int(response)
                 result = fulloptions[response - 1][0]
@@ -1031,7 +1031,7 @@ class Cmd(cmd.Cmd):
                 
     def do_pause(self, arg):
         'Displays the specified text then waits for the user to press RETURN.'
-        raw_input(arg + '\n')
+        input(arg + '\n')
         
     def do_shell(self, arg):
         'execute a command as if at the OS prompt.'
@@ -1194,7 +1194,7 @@ class Cmd(cmd.Cmd):
         else:
             match = self.urlre.match(fname)
             if match:
-                result = urllib.urlopen(match.group(1))
+                result = urllib.request.urlopen(match.group(1))
             else:
                 fname = os.path.expanduser(fname)
                 try:
@@ -1289,7 +1289,7 @@ class Cmd(cmd.Cmd):
 
         (callopts, callargs) = parser.parse_args()
         if not callopts.sources_dir:
-            print "ERROR: Option -d is Mandatory."        
+            print("ERROR: Option -d is Mandatory.")        
         else:
             self.init(callopts.sources_dir)
             self._cmdloop()   
@@ -1432,7 +1432,7 @@ def cast(current, new):
             return typ(new)
         except:
             pass
-    print ("Problem setting parameter (now %s) to %s; incorrect type?" % (current, new))
+    print(("Problem setting parameter (now %s) to %s; incorrect type?" % (current, new)))
     return current
         
 class Statekeeper(object):
@@ -1488,7 +1488,7 @@ class Cmd2TestCase(unittest.TestCase):
                 self.transcripts[fname] = iter(tfile.readlines())
                 tfile.close()
         if not len(self.transcripts):
-            raise StandardError("No test files found - nothing to test.")
+            raise Exception("No test files found - nothing to test.")
     def setUp(self):
         if self.CmdApp:
             self.outputTrap = OutputTrap()
@@ -1508,29 +1508,27 @@ class Cmd2TestCase(unittest.TestCase):
     def _test_transcript(self, fname, transcript):
         lineNum = 0
         finished = False
-        line = transcript.next()
+        line = next(transcript)
         lineNum += 1
         tests_run = 0
         while not finished:
             # Scroll forward to where actual commands begin
             while not line.startswith(self.cmdapp.prompt):
                 try:
-                    line = transcript.next()
+                    line = next(transcript)
                 except StopIteration:
                     finished = True
                     break
                 lineNum += 1
             command = [line[len(self.cmdapp.prompt):]]
-            line = transcript.next()
+            line = next(transcript)
             # Read the entirety of a multi-line command
             while line.startswith(self.cmdapp.continuation_prompt):
                 command.append(line[len(self.cmdapp.continuation_prompt):])
                 try:
-                    line = transcript.next()
+                    line = next(transcript)
                 except StopIteration:
-                    raise (StopIteration, 
-                           'Transcript broke off while reading command beginning at line %d with\n%s' 
-                           % (command[0]))
+                    raise StopIteration
                 lineNum += 1
             command = ''.join(command)               
             # Send the command into the application and capture the resulting output
@@ -1541,13 +1539,13 @@ class Cmd2TestCase(unittest.TestCase):
             if line.startswith(self.cmdapp.prompt):
                 message = '\nFile %s, line %d\nCommand was:\n%r\nExpected: (nothing)\nGot:\n%r\n'%\
                     (fname, lineNum, command, result)     
-                self.assert_(not(result.strip()), message)
+                self.assertTrue(not(result.strip()), message)
                 continue
             expected = []
             while not line.startswith(self.cmdapp.prompt):
                 expected.append(line)
                 try:
-                    line = transcript.next()
+                    line = next(transcript)
                 except StopIteration:
                     finished = True                       
                     break
@@ -1560,7 +1558,7 @@ class Cmd2TestCase(unittest.TestCase):
             # checking whitespace is a pain - let's skip it
             expected = self.anyWhitespace.sub('', expected)
             result = self.anyWhitespace.sub('', result)
-            self.assert_(re.match(expected, result, re.MULTILINE | re.DOTALL), message)
+            self.assertTrue(re.match(expected, result, re.MULTILINE | re.DOTALL), message)
 
     def tearDown(self):
         if self.CmdApp:

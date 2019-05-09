@@ -24,15 +24,15 @@ class Walker:
 				if file.endswith(".smali"):
 					with open(root+"/"+file, "r") as file_handle:
 						content = file_handle.read()
-						class_name = re.search('^\.class\s+(.*?)\r\n\.super\s+(.*?)\r\n\.source\s+(.*?)\r\n', content).groups()[0].split(' ')[-1]
+						class_name = re.search('^\.class\s+(.*?)' + os.linesep +'\.super\s+(.*?)' + os.linesep +'\.source\s+(.*?)' + os.linesep, content).groups()[0].split(' ')[-1]
 						self.AppInventory[class_name] = {}
-						self.AppInventory[class_name]['Properties'] = re.findall('[.]field\s+(.*?)\r\n', content, re.DOTALL)
+						self.AppInventory[class_name]['Properties'] = re.findall('[.]field\s+(.*?)' + os.linesep, content, re.DOTALL)
 						self.AppInventory[class_name]['Methods'] = []
-						for m in re.findall('[.]method\s(.*?)\r\n(.*?)[.]end\s+method', content, re.DOTALL):
+						for m in re.findall('[.]method\s(.*?)' + os.linesep +'(.*?)[.]end\s+method', content, re.DOTALL):
 							ind_meth = {}
 							ind_meth['Name'] = m[0].split(' ')[-1]
 							ind_meth['Instructions'] = []
-							for i in m[1].split('\r\n'):
+							for i in m[1].split(os.linesep):
 								if len(i)>0:
-									ind_meth['Instructions'].append( i.lstrip().rstrip() )
-							self.AppInventory[class_name]['Methods'].append( ind_meth )
+									ind_meth['Instructions'].append(i.lstrip().rstrip())
+							self.AppInventory[class_name]['Methods'].append(ind_meth)

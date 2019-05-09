@@ -122,7 +122,7 @@ class CmdLineApp(Cmd):
 								if lvl==0:
 									auxCalls.append( (caller, called) )
 								else:
-									if called.split('->')[0] in self.walker.AppInventory.keys():
+									if called.split('->')[0] in list(self.walker.AppInventory.keys()):
 										auxCalls.append( (caller, called) )
 			return auxCalls
 
