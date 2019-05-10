@@ -1,5 +1,21 @@
+smali-parser
+============
+
+Command line options allow the output of strings classes and packages
+
+    Usage:
+        -d <path for smali> <option>
+        
+    options:
+        -s print strings
+        -p print packages
+        -c print classes
+
+
+Commandline is part of the original project
+
 Smali-CFGs
-==========
+
 
 Smali Control Flow Graph's
 
