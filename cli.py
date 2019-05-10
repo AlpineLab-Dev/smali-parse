@@ -11,9 +11,8 @@ from printers.graphs import GraphManager
 from printers.console import ConsoleManager
 
 from libs.cmd2 import Cmd, make_option, options, Cmd2TestCase
-import optparse, sys
-
-#import getopt, sys
+import sys
+import getopt
 
 class CmdLineApp(Cmd):
 	Cmd.shortcuts.update({'!pu': 'packageUsage'})
@@ -190,5 +189,27 @@ class CmdLineApp(Cmd):
 				self.cprint.print_error("Complex Graph can't be rendered with graphviz libraries, using .dot format instead!\n")
 				graph_mgr.draw("CrossReferences", False)
 
+
 app = CmdLineApp()
-app.cmdloop()
+
+if '-c' in sys.argv:
+	app.init(sys.argv[2])
+	app.walker.do_walk()
+	app.walker.get_classes()
+elif '-s' in sys.argv:
+	app.init(sys.argv[2])
+	fnd = StringsFinder('.', return_strings=True)
+	app.walker.assign_finder(fnd)
+	results = app.walker.do_find()
+	if len(results) > 0:
+		for k in results:
+			for j in results[k]:
+				print("{}:{}".format(k, j))
+elif '-p' in sys.argv:
+	app.init(sys.argv[2])
+	app.walker.do_walk()
+	for p in app.walker.AppInventory['packages']:
+		print("{}".format(p))
+
+else:
+	app.cmdloop()

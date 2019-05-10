@@ -11,20 +11,26 @@ class Walker:
 		self.Finder         = None
 		self.do_walk()
 
+	def get_classes(self):
+		k = self.AppInventory.keys()
+		print("{}".format(k))
+
 	def assign_finder(self, finder):
 		self.Finder = finder
 
 	def do_find(self):
-		return self.Finder.do_find( self.AppInventory )
+		return self.Finder.do_find(self.AppInventory)
 
 	def do_walk(self):
 		self.AppInventory = {}
-		for root, subFolders, files in os.walk( self.location ):
+		self.AppInventory['packages'] = set()
+		for root, subFolders, files in os.walk(self.location):
 			for file in files:
 				if file.endswith(".smali"):
+					self.AppInventory['packages'].add(root.replace(self.location+"/", '').replace('/', '.'))
 					with open(root+"/"+file, "r") as file_handle:
 						content = file_handle.read()
-						class_name = re.search('^\.class\s+(.*?)' + os.linesep +'\.super\s+(.*?)' + os.linesep +'\.source\s+(.*?)' + os.linesep, content).groups()[0].split(' ')[-1]
+						class_name = re.search('^\.class\s+(.*?)' + os.linesep +'\.super\s+(.*?)' + os.linesep + '\.source\s+(.*?)' + os.linesep, content).groups()[0].split(' ')[-1]
 						self.AppInventory[class_name] = {}
 						self.AppInventory[class_name]['Properties'] = re.findall('[.]field\s+(.*?)' + os.linesep, content, re.DOTALL)
 						self.AppInventory[class_name]['Methods'] = []
