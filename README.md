@@ -154,3 +154,7 @@ And with out calls:
 	*  Method Lcom/vvt/base/security/FxSecurity;->getConstant([B)Ljava/lang/String; Instructions Flow saved to MethodInstructionsFlow2.png.
 
 ![](https://raw.github.com/EugenioDelfa/Smali-CFGs/master/imgs/MethodInstructionsFlow_full.png)
+
+(Windows) graphviz:
+
+	https://graphviz.org/download/
