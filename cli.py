@@ -162,32 +162,33 @@ class CmdLineApp(Cmd):
 			level +=1
 			if level == opts.max_levels: break
 
-		graph_mgr = GraphManager()
-		coincidences = {}
+		# graph_mgr = GraphManager()
+		# coincidences = {}
 
 		for calls in results:
 			caller, called = calls
-			graph_mgr.add_xref_edge(caller, called, method_definition, StringMatch)
-			if StringMatch:
-				if (caller in StringMatch) and (caller not in coincidences):
-					coincidences[caller] = StringMatch[caller]
-				elif (called in StringMatch) and (called not in coincidences):
-					coincidences[called] = StringMatch[called]
+			self.cprint.print_xref(caller, called)
+			# graph_mgr.add_xref_edge(caller, called, method_definition, StringMatch)
+			# if StringMatch:
+			# 	if (caller in StringMatch) and (caller not in coincidences):
+			# 		coincidences[caller] = StringMatch[caller]
+			# 	elif (called in StringMatch) and (called not in coincidences):
+			# 		coincidences[called] = StringMatch[called]
 
-		self.cprint.print_dict(coincidences)
+		# self.cprint.print_dict(coincidences)
 
-		if StringMatch:
-			try:
-				graph_mgr.draw("CrossReferencesWithPatterns", not opts.store_dot)
-			except:
-				self.cprint.print_error("Complex Graph can't be rendered with graphviz libraries, using .dot format instead!\n")
-				graph_mgr.draw("CrossReferencesWithPatterns", False)
-		else:
-			try:
-				graph_mgr.draw("CrossReferences", not opts.store_dot)
-			except:
-				self.cprint.print_error("Complex Graph can't be rendered with graphviz libraries, using .dot format instead!\n")
-				graph_mgr.draw("CrossReferences", False)
+		# if StringMatch:
+		# 	try:
+		# 		graph_mgr.draw("CrossReferencesWithPatterns", not opts.store_dot)
+		# 	except:
+		# 		self.cprint.print_error("Complex Graph can't be rendered with graphviz libraries, using .dot format instead!\n")
+		# 		graph_mgr.draw("CrossReferencesWithPatterns", False)
+		# else:
+		# 	try:
+		# 		graph_mgr.draw("CrossReferences", not opts.store_dot)
+		# 	except:
+		# 		self.cprint.print_error("Complex Graph can't be rendered with graphviz libraries, using .dot format instead!\n")
+		# 		graph_mgr.draw("CrossReferences", False)
 
 
 app = CmdLineApp()

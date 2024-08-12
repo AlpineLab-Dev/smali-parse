@@ -29,5 +29,9 @@ class ConsoleManager(object):
 			for str_m in dct[mth]:
 				print(bcolors.OKBLUE + "\t\t - " + str_m + bcolors.ENDC)
 
+	def print_xref(self, caller, called):
+		print(bcolors.OKGREEN + caller + bcolors.ENDC)
+		print(bcolors.OKBLUE + "\t - " + called + bcolors.ENDC)
+
 	def print_error(self, msg):
 		print(bcolors.FAIL + msg + bcolors.ENDC)

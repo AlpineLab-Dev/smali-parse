@@ -10,6 +10,7 @@ class CallsFinder(object):
 	def do_find(self, where):
 		co = []
 		for class_name in where:
+			if class_name == 'packages': continue
 			for mth_dict in where[class_name]['Methods']:
 				caller = "%s->%s" % (class_name, mth_dict['Name'])
 				block = '\r\n'.join( mth_dict['Instructions'] )
